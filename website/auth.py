@@ -13,19 +13,35 @@ def login():
         password = request.form['password']
 
         # TODO: Validation
-        user = Users.find_one({'username' : username})
 
-        check_name = user.get('username')
-        check_password = user.get('password')
+        try:
+            user = Users.find_one({'username': username})
+            if username == user.get('username'):
+                print('correct username')
+                if password != user.get('password'):
+                    print('wrong password')
+                else:
+                    print('correct password')
+        except:
+            print('not a registered user!')
 
-        if username == check_name:
-            print('CORRECT NAME')
-            if password != check_password:
-                print('ACCESS DENIED!')
-            else:
-                print('ACCESS GRANTED!')
-        else:
-            print('USER NOT FOUND.')
+
+
+
+
+        # user = Users.find_one({'username' : username})
+        #
+        # check_name = user.get('username')
+        # check_password = user.get('password')
+        #
+        # if username == check_name:
+        #     print('CORRECT NAME')
+        #     if password != check_password:
+        #         print('ACCESS DENIED!')
+        #     else:
+        #         print('ACCESS GRANTED!')
+        # else:
+        #     print('USER NOT FOUND.')
 
     return render_template('login.html')
 
