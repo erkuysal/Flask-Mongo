@@ -13,17 +13,19 @@ def login():
         password = request.form['password']
 
         # TODO: Validation
+        user = Users.find_one({'username' : username})
 
-        # Login Confirmed
-        if pass:
-            if pass:
-                flash('Welcome back!', 'SUCCESS')
-                return redirect(url_for('success.html'))
-        # Login Denied
+        check_name = user.get('username')
+        check_password = user.get('password')
+
+        if username == check_name:
+            print('CORRECT NAME')
+            if password != check_password:
+                print('ACCESS DENIED!')
+            else:
+                print('ACCESS GRANTED!')
         else:
-            flash('I have never met this man in my life !', 'DENIED')
-            return redirect(url_for('denied.html'))
-
+            print('USER NOT FOUND.')
 
     return render_template('login.html')
 
