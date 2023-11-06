@@ -1,8 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .get_database import get_database
+from .models import User
+
+# Sessions
+from flask import session
+from flask_session import Session
 
 dbname = get_database()
-Users = dbname["users"]
+Users = dbname["Users"]
 
 auth = Blueprint('auth', __name__)
 
@@ -16,32 +21,18 @@ def login():
 
         try:
             user = Users.find_one({'username': username})
+
             if username == user.get('username'):
                 print('correct username')
-                if password != user.get('password'):
+                if password == user.get('password'):
+                    flash('Wrong Password', 'DENIED')
                     print('wrong password')
                 else:
+                    flash(f'Welcome back {user.get('username')}','SUCCESS')
                     print('correct password')
         except:
+            flash('I never met this man in my life' , 'NULL')
             print('not a registered user!')
-
-
-
-
-
-        # user = Users.find_one({'username' : username})
-        #
-        # check_name = user.get('username')
-        # check_password = user.get('password')
-        #
-        # if username == check_name:
-        #     print('CORRECT NAME')
-        #     if password != check_password:
-        #         print('ACCESS DENIED!')
-        #     else:
-        #         print('ACCESS GRANTED!')
-        # else:
-        #     print('USER NOT FOUND.')
 
     return render_template('login.html')
 
@@ -55,10 +46,7 @@ def register_user():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        Users.insert_one({'email': email,
-                          'username': username,
-                          'password': password
-                          })
+        User.save(User(username, password, password))
         flash('Welcome to the Club', 'SUCCESS')
 
     profiles = Users.find()

@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
-import datetime
+from datetime import datetime, UTC
 
 client = MongoClient ('localhost', 27017)
 db = client['profiles']
@@ -12,8 +12,9 @@ class User:
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = generate_password_hash(password)
-        self.created_at = datetime.datetime.utcnow()
+        self.password = password
+        # datetime.now(tz=None) // gives local time
+        self.created_at = datetime.now(UTC)
 
     @classmethod
     def from_dict(cls, data):
