@@ -3,30 +3,32 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
 from datetime import datetime, UTC
 
-client = MongoClient ('localhost', 27017)
+
+client = MongoClient('localhost', 27017)
+
 db = client['profiles']
 collection = db['Users']
 
 
 class User:
-    def __init__(self, username, email, password):
-        self.username = username
+    def __init__(self, email, username, password):
         self.email = email
+        self.username = username
         self.password = password
         # datetime.now(tz=None) // gives local time
         self.created_at = datetime.now(UTC)
 
     @classmethod
     def from_dict(cls, data):
-        user = cls(data['username'], data['email'], data['password'])
+        user = cls(data['email'], data['username'], data['password'])
         if 'created_at' in data:
             user.created_at = data['created_at']
         return user
 
     def to_dict(self):
         return {
-            'username': self.username,
             'email': self.email,
+            'username': self.username,
             'password': self.password,
             'created_at': self.created_at
         }
