@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from .get_database import get_database
 from .models import User
 
@@ -25,28 +25,29 @@ def login():
                     flash('Wrong Password', 'DENIED')
                     print('wrong password')
                 else:
-                    #sess['user_id'] = user['_id']  # Store the user's ID in the session
+                    session['user'] = user.get('username')
                     flash(f'Welcome back {user.get('username')}', 'SUCCESS')
                     print('correct password')
-                    return redirect(url_for('profile'))  # Redirect to the user's profile page
+                    return redirect(url_for('auth.profile'))  # Redirect to the user's profile page
 
         except:
             if user is None:
                 flash('I never met this man in my life', 'NULL')
                 print('not a registered user!')
+                return redirect(url_for('auth.register'))
 
     return render_template('login.html')
 
 
 @auth.route('/logout')
 def logout():
-    #sess.pop('user_id', None)  # Clear the user's session
+    session.pop('user', None)
     flash('You have been logged out', 'SUCCESS')
     return redirect(url_for('auth.login'))
 
 
 @auth.route('/register', methods=['GET', 'POST'])
-def register_user():
+def register():
     if request.method == 'POST':
         email = request.form['email']
         username = request.form['username']
@@ -59,17 +60,11 @@ def register_user():
     return render_template('register.html', todos=profiles)
 
 
-'''
 @auth.route('/profile')
 def profile():
-    # Fetch the user's profile data from the database or any other source.
-    # You can use the current user's session or database information to personalize the profile page.
-    user_id = sess.get('user_id')
-    if user_id:
-        # Retrieve user information from the database using user_id
-        # Render the profile page with user-specific data
+    if 'user' in session:
+        user = session['user']
         return render_template('profile.html')
     else:
-        flash('You must be logged in to access your profile', 'DENIED')
         return redirect(url_for('auth.login'))
-'''
+
