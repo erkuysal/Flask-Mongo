@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from .get_database import get_database
 from .models import User
+from .hasher import check_password
 
 dbname = get_database()
 Users = dbname["Users"]
@@ -21,7 +22,7 @@ def login():
             if username == user.get('username'):
                 print('correct username')
 
-                if password != user.get('password'):
+                if not check_password(password, user.get('password')):
                     flash('Wrong Password', 'DENIED')
                     print('wrong password')
                 else:
@@ -67,4 +68,3 @@ def profile():
         return render_template('profile.html')
     else:
         return redirect(url_for('auth.login'))
-

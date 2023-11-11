@@ -1,8 +1,7 @@
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash, check_password_hash
-from bson.objectid import ObjectId
 from datetime import datetime, UTC
 
+from .hasher import hash_password, check_password
 
 client = MongoClient('localhost', 27017)
 
@@ -14,7 +13,7 @@ class User:
     def __init__(self, email, username, password):
         self.email = email
         self.username = username
-        self.password = password
+        self.password = hash_password(password)
         # datetime.now(tz=None) // gives local time
         self.created_at = datetime.now(UTC)
 
@@ -46,4 +45,4 @@ class User:
         return None
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password(password, self.password)

@@ -1,1 +1,11 @@
-<p>THIS IS -{{ template_name_or_list }}- PAGE</p>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>User: {{ user }}</h1>
+    <hr>
+{#    {% for post in posts %}#}
+{#    <p>#}
+{#    {{ post.author.username }} says: <b>{{ post.body }}</b>#}
+{#    </p>#}
+{#    {% endfor %}#}
+{% endblock %}
