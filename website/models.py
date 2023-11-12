@@ -1,10 +1,9 @@
 from pymongo import MongoClient
 from datetime import datetime, UTC
 
-from .hasher import hash_password, check_password
+import bcrypt
 
 client = MongoClient('localhost', 27017)
-
 db = client['profiles']
 collection = db['Users']
 
@@ -13,7 +12,7 @@ class User:
     def __init__(self, email, username, password):
         self.email = email
         self.username = username
-        self.password = hash_password(password)
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         # datetime.now(tz=None) // gives local time
         self.created_at = datetime.now(UTC)
 
@@ -39,10 +38,17 @@ class User:
 
     @classmethod
     def find_by_username(cls, username):
-        user_data = collection.find_one({'username': username})
-        if user_data:
-            return cls.from_dict(user_data)
+        username_data = collection.find_one({'username': username})
+        if username_data:
+            return cls.from_dict(username_data)
         return None
 
-    def check_password(self, password):
-        return check_password(password, self.password)
+    @classmethod
+    def find_by_email(cls, email):
+        email_data = collection.find_one({'email': email})
+        if email_data:
+            return cls.from_dict(email_data)
+        return None
+
+    def check_password(self, entry):
+        return bcrypt.checkpw(entry, self.password)

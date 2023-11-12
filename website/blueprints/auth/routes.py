@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from .get_database import get_database
-from .models import User
-from .hasher import check_password
+from ...get_database import get_database
+from ...models import User
+from ...hasher import check_password
+
+from . import auth
 
 dbname = get_database()
 Users = dbname["Users"]
-
-auth = Blueprint('auth', __name__)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
