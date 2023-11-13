@@ -1,4 +1,5 @@
 # imports
+from main import app
 
 
 class Config(object):

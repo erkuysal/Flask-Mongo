@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from ...get_database import get_database
+from flask import render_template, request, redirect, url_for, flash, session
+
+from ...db import get_database
 from ...models import User
 from ...hasher import check_password
 
 from . import auth
+from .forms import *
 
 dbname = get_database()
 Users = dbname["Users"]
@@ -68,3 +70,20 @@ def profile():
         return render_template('profile.html')
     else:
         return redirect(url_for('auth.login'))
+
+
+@auth.route('/form', methods=['GET', 'POST'])
+def test_form():
+    form = HelloForm()
+    if form.validate_on_submit():
+        flash('Form validated!')
+        return redirect(url_for('auth.index'))
+    return render_template(
+        'form.html',
+        form=form,
+        # telephone_form=TelephoneForm(),
+        # contact_form=ContactForm(),
+        # im_form=IMForm(),
+        button_form= ButtonForm()
+        # example_form=ExampleForm()
+    )
