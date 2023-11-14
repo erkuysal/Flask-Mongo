@@ -1,54 +1,17 @@
 {% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form, render_field, render_form_row %}
 
 {% block title %} Register {% endblock %}
 
 {% block content %}
 
     <form method="post">
-        <h3 align="center">Register</h3>
-
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email"
-                   class="form-control"
-                   id="email"
-                   name="email"
-                   placeholder="example@mail.com">
-        </div>
-
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text"
-                   class="form-control"
-                   id="username"
-                   name="username"
-                   placeholder="example">
-        </div>
-
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password"
-                   class="form-control"
-                   id="password"
-                   name="password"
-                   placeholder="**********">
-        </div>
-
-        <div class="form-group">
-            <label for="password_c">Password (confirm)</label>
-            <input type="password"
-                   class="form-control"
-                   id="password_c"
-                   name="password_c"
-                   placeholder="**********">
-        </div>
-
-        <br>
-
-        <button type="submit" class="btn btn-primary">
-            Join
-        </button>
-
+        {{ form.csrf_token }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.username) }}
+        {{ render_field(form.password) }}
+        {{ render_field(form.password_c) }}
+        {{ render_field(form.submit) }}
     </form>
 
 {% endblock %}

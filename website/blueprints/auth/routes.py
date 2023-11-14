@@ -51,16 +51,28 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        User.save(User(email, username, password))
-        flash('Welcome to the Club', 'SUCCESS')
-        return redirect(url_for('auth.login'))  # Redirect to the login page after registration
+    form = SignUpForm()
+    if form.validate_on_submit():
+        flash('Form Validated!')
+        User.save(User(form.email.data, form.username.data, form.password.data))
+        return redirect(url_for('auth.login'))
 
     profiles = Users.find()
-    return render_template('register.html', todos=profiles)
+    return render_template('register.html', todos=profiles,
+                           form=form)
+
+
+
+    # if request.method == 'POST':
+    #     email = request.form['email']
+    #     username = request.form['username']
+    #     password = request.form['password']
+    #     User.save(User(email, username, password))
+    #     flash('Welcome to the Club', 'SUCCESS')
+    #     return redirect(url_for('auth.login'))  # Redirect to the login page after registration
+    #
+    # profiles = Users.find()
+    # return render_template('register.html', todos=profiles)
 
 
 @auth.route('/profile')
