@@ -5,13 +5,6 @@ from wtforms.fields import *
 from flask_bootstrap import SwitchField
 
 
-class HelloForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(8, 150)])
-    remember = BooleanField('Remember me')
-    submit = SubmitField()
-
-
 class ButtonForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
     confirm = SwitchField('Confirmation')
@@ -33,4 +26,12 @@ class SignUpForm(FlaskForm):
                                          EqualTo('password_c', message='Passwords must match.')])
     password_c = PasswordField('Confirm password',
                                validators=[DataRequired()])
-    submit = SubmitField()
+    submit = SubmitField('Sign Up')
+
+
+class SignInForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired()])
+    password = PasswordField('Password',
+                             validators=[DataRequired()])
+    submit = SubmitField('Sign In')
