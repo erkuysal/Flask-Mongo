@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for, flash, session
+import bcrypt
 
 from ...db import get_database
-from ...models import User
-# from ...hasher import check_password
+from ...models import User, db
 
 from . import auth
 from .forms import *
@@ -20,12 +20,11 @@ def login():
 
         # TODO: Validation
         existing_user = User.find_by_username(username)
-        instance = User.from_dict(existing_user)
         try:
             if username == existing_user['username']:
                 print('correct username')
 
-                if User.check_password(existing_user['password'], password) is False:
+                if bcrypt.checkpw(password.encode(), existing_user.get('password').encode()) is False:
                     flash('Wrong Password', 'DENIED')
                     print('wrong password')
                 else:
@@ -61,6 +60,7 @@ def logout():
     session.pop('user', None)
     flash('You have been logged out', 'SUCCESS')
     return redirect(url_for('auth.login'))
+
 
 @auth.route('/profile')
 def profile():
