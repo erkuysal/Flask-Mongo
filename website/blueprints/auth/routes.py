@@ -1,13 +1,12 @@
 from flask import render_template, request, redirect, url_for, flash, session
 import bcrypt
 
-from ...db import get_database
 from ...models import User, db
 
 from . import auth
 from .forms import *
 
-dbname = get_database()
+dbname = db
 Users = dbname["Users"]
 
 
