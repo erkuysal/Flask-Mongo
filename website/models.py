@@ -6,6 +6,7 @@ import bcrypt
 client = MongoClient('localhost', 27017)
 db = client['profiles']
 collection = db['Users']
+Posts = db['Posts']
 
 
 class User:
@@ -59,3 +60,14 @@ class User:
             # Handle exceptions (e.g., invalid hashing format, incorrect input)
             print(f"Error checking password: {e}")
             return False
+
+
+class Post:
+    def __init__(self, id, title, content, date_posted):
+        self.id = id
+        self.title = title
+        self.content = content
+        self.date_posted = date_posted
+
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"

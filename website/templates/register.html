@@ -8,10 +8,34 @@
     <form method="post">
         {{ form.csrf_token }}
         {{ render_field(form.email) }}
-        {{ render_field(form.username) }}
+        {{ form.hidden_tag() }}
+        {{ form.username.label(class="form-control-label") }}
+        {{ form.username(class="form-control", id="username-input") }}
+        <span id="username-message"></span>
         {{ render_field(form.password) }}
         {{ render_field(form.password_c) }}
         {{ render_field(form.submit) }}
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+    $(document).ready(function () {
+      // Attach an event listener to the username input
+      $("#username-input").on("input", function () {
+        var username = $(this).val();
+
+        // Send an AJAX request to check if the username is taken
+        $.ajax({
+          url: "/check_username",
+          type: "POST",
+          data: { username: username },
+          success: function (response) {
+            // Display the response message
+            $("#username-message").html(response.message);
+          },
+        });
+      });
+    });
+    </script>
 
 {% endblock %}

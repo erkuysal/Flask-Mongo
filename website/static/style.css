@@ -1,0 +1,15 @@
+#top-header {
+  top: 0;
+  text-align: center;
+  width: 100%;
+  height: 100px;
+  margin: 0;
+  font-style: italic;
+  font-size: xx-large;
+}
+
+#message {
+  padding: 1.5rem;
+  display: inline-block;
+  transition: background-color 0.5s ease-in-out;
+}
