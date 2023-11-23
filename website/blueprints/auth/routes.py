@@ -1,16 +1,21 @@
+# Package imports
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
-import flask_login
+from flask_login import current_user, login_user, logout_user
 import bcrypt
 
+# Model imports
 from ...models import User, db
 
+# Inner imports
 from . import auth
 from .forms import *
 
+# Collections
 dbname = db
 Users = dbname["Users"]
 
 
+#  ------------------------------ Sign Up Section --------------------------------------
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = SignUpForm()
@@ -39,6 +44,25 @@ def register():
                            form=form)
 
 
+@auth.route('/check_username', methods=['POST'])
+def check_username():
+    form = SignUpForm()
+    username = form.username.data
+
+    # Check if the username is already taken
+    existing_username = User.find_by_username(username)
+
+    if existing_username:
+        message = 'Username is already taken. Please choose a different one.'
+        available = False
+    else:
+        message = 'Username is available!'
+        available = True
+
+    return jsonify({'message': message, 'available': available})
+
+
+#  ------------------------------ Sign In Section --------------------------------------
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = SignInForm()
@@ -70,6 +94,7 @@ def login():
     return render_template('login.html', form=form)
 
 
+#  ------------------------------ Log Out Section --------------------------------------
 @auth.route('/logout')
 def logout():
     session.pop('user', None)
@@ -77,6 +102,7 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+#  ------------------------------ Profile Section --------------------------------------
 @auth.route('/profile')
 def profile():
     if 'user' in session:
@@ -85,20 +111,6 @@ def profile():
     else:
         return redirect(url_for('auth.login'))
 
-@auth.route('/check_username', methods=['POST'])
-def check_username():
-    form = SignUpForm()
-    username = form.username.data
 
-    # Check if the username is already taken
-    existing_username = User.find_by_username(username)
 
-    if existing_username:
-        message = 'Username is already taken. Please choose a different one.'
-        available = False
-    else:
-        message = 'Username is available!'
-        available = True
-
-    return jsonify({'message': message, 'available': available})
 

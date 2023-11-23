@@ -1,14 +1,20 @@
+# Package imports
 from pymongo import MongoClient
 from datetime import datetime, UTC
 
+# inner imports
+
+# additional imports
 import bcrypt
 
+# DataBase handling
 client = MongoClient('localhost', 27017)
 db = client['profiles']
 collection = db['Users']
 Posts = db['Posts']
 
 
+# User model --------------------------------------------------------------
 class User:
     def __init__(self, email, username, password):
         self.email = email
@@ -62,9 +68,10 @@ class User:
             return False
 
 
+# Post model --------------------------------------------------------------
 class Post:
-    def __init__(self, id, title, content, date_posted):
-        self.id = id
+    def __init__(self, _id, title, content, date_posted):
+        self.id = _id
         self.title = title
         self.content = content
         self.date_posted = date_posted
