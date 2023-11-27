@@ -19,12 +19,12 @@ def create_app():
 
     # Blueprint imports
     # ...
-    from .views import views
+    from .blueprints.main import main
     from .blueprints.auth import auth
 
     # Blueprint registers
     # ...
-    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(main, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
     return app
