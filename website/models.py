@@ -1,8 +1,10 @@
 # Package imports
 from pymongo import MongoClient
 from datetime import datetime, UTC
+from flask_login import UserMixin
 
 # inner imports
+from . import login_manager
 
 # additional imports
 import bcrypt
@@ -10,12 +12,14 @@ import bcrypt
 # DataBase handling
 client = MongoClient('localhost', 27017)
 db = client['profiles']
-collection = db['Users']
-Posts = db['Posts']
+collection_users = db['Users']
+collection_posts = db['Posts']
 
 
-# User model --------------------------------------------------------------
-class User:
+# --------------------------- User Model -----------------------------------
+
+
+class User(UserMixin):
     def __init__(self, email, username, password):
         self.email = email
         self.username = username
@@ -33,7 +37,7 @@ class User:
 
     def save(self):
         user_data = self.to_dict()
-        result = collection.insert_one(user_data)
+        result = collection_users.insert_one(user_data)
         return result.inserted_id
 
     @classmethod
@@ -45,14 +49,14 @@ class User:
 
     @classmethod
     def find_by_username(cls, username):
-        user_data = collection.find_one({'username': username})
+        user_data = collection_users.find_one({'username': username})
         if user_data:
             return user_data
         return None
 
     @classmethod
     def find_by_email(cls, email):
-        email_data = collection.find_one({'email': email})
+        email_data = collection_users.find_one({'email': email})
         if email_data:
             return email_data
         return None
@@ -67,8 +71,17 @@ class User:
             print(f"Error checking password: {e}")
             return False
 
+# --------------------------- User Loader -----------------------------------
+
+
+@login_manager.user_loader
+def load_user(username):
+    return User.find_by_username(username)
+
 
 # Post model --------------------------------------------------------------
+
+
 class Post:
     def __init__(self, _id, title, content, date_posted):
         self.id = _id

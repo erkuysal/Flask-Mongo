@@ -1,10 +1,12 @@
 # Package imports
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
+from datetime import datetime, UTC
 import bcrypt
 
 # Model imports
 from ...models import User, db
+from ... import login_manager
 
 # Inner imports
 from . import auth
@@ -15,7 +17,15 @@ dbname = db
 Users = dbname["Users"]
 
 
+@auth.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(UTC)
+
+
 #  ------------------------------ Sign Up Section --------------------------------------
+
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = SignUpForm()
@@ -63,6 +73,8 @@ def check_username():
 
 
 #  ------------------------------ Sign In Section --------------------------------------
+
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = SignInForm()
@@ -74,15 +86,12 @@ def login():
         existing_user = User.find_by_username(username)
         try:
             if username == existing_user['username']:
-                print('correct username')
 
                 if bcrypt.checkpw(password.encode(), existing_user.get('password').encode()) is False:
                     flash('Wrong Password', 'DENIED')
-                    print('wrong password')
                 else:
-                    session['user'] = existing_user.get('username')
-                    flash(f'Welcome back {existing_user.get('username')}', 'SUCCESS')
-                    print('correct password')
+                    login_user(existing_user, form.remember_me.data)
+                    # flash(f'Welcome back {existing_user.get('username')}', 'SUCCESS')
                     return redirect(url_for('auth.profile'))  # Redirect to the user's profile page
 
         except Exception as e:
@@ -95,21 +104,24 @@ def login():
 
 
 #  ------------------------------ Log Out Section --------------------------------------
+
+
 @auth.route('/logout')
+@login_required
 def logout():
-    session.pop('user', None)
+    logout_user()
     flash('You have been logged out', 'SUCCESS')
     return redirect(url_for('auth.login'))
 
 
 #  ------------------------------ Profile Section --------------------------------------
+
+
 @auth.route('/profile')
-def profile():
-    if 'user' in session:
-        user = session['user']
-        return render_template('profile.html')
-    else:
-        return redirect(url_for('auth.login'))
+@login_required
+def profile(username):
+    user = User.find_by_username(username).first_or_404()
+    return render_template('profile.html', user=user)
 
 
 

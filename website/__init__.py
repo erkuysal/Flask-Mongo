@@ -4,7 +4,7 @@ from flask_login import LoginManager
 
 bootstrap = Bootstrap5()
 login_manager = LoginManager()
-
+login_manager.login_view = "auth.login"
 
 def create_app():
     app = Flask(__name__, template_folder='templates')
@@ -12,6 +12,7 @@ def create_app():
     # Initialisations
     # ...
     bootstrap.init_app(app)
+    login_manager.init_app(app)
 
     # Configurations
     # ...

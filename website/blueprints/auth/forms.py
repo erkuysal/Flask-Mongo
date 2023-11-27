@@ -5,14 +5,6 @@ from wtforms.fields import *
 from flask_bootstrap import SwitchField
 
 
-class ButtonForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
-    confirm = SwitchField('Confirmation')
-    submit = SubmitField()
-    delete = SubmitField()
-    cancel = SubmitField()
-
-
 class SignUpForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(),
@@ -34,4 +26,5 @@ class SignInForm(FlaskForm):
                            validators=[DataRequired()])
     password = PasswordField('Password',
                              validators=[DataRequired()])
+    remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Sign In')
