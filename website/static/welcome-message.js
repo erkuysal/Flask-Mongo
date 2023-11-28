@@ -1,9 +1,9 @@
 const timePeriods = [
-    { period: "earlyMorning", messages: ["Good Morning?", "Shh, sun hasn't risen yet!", "A new day, actually."], color: "#f1c40f" },
-    { period: "morning", messages: ["Good Morning!", "Have a great morning!", "Stay productive."], color: "#3498db" },
-    { period: "afternoon", messages: ["Good Afternoon!", "Time for a break!", "Keep up the good work."], color: "#2ecc71" },
-    { period: "evening", messages: ["Good Evening!", "Enjoy your evening!", "Reflect on your day."], color: "#e74c3c" },
-    { period: "night", messages: ["Good Night!", "Sweet dreams!", "Rest well."], color: "#34495e" }
+    { period: "earlyMorning", messages: ["Good Morning?", "Shh, sun hasn't risen yet!", "A new day, actually."], color: "#ffebc6" },
+    { period: "morning", messages: ["Good Morning!", "Have a great morning!", "Stay productive."], color: "#ffe6a8" },
+    { period: "afternoon", messages: ["Good Afternoon!", "Time for a break!", "Keep up the good work."], color: "#ffe27f" },
+    { period: "evening", messages: ["Good Evening!", "Enjoy your evening!", "Reflect on your day."], color: "#ffb768" },
+    { period: "night", messages: ["Good Night!", "Sweet dreams!", "Rest well."], color: "#292929" }
 ];
 
 function getCurrentTimePeriod() {
