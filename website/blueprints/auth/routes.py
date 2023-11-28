@@ -24,8 +24,6 @@ def before_request():
 
 
 #  ------------------------------ Sign Up Section --------------------------------------
-
-
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = SignUpForm()
@@ -73,39 +71,55 @@ def check_username():
 
 
 #  ------------------------------ Sign In Section --------------------------------------
-
-
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = SignInForm()
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit():
         username = form.username.data
         password = form.password.data
 
-        # TODO: Validation
-        existing_user = User.find_by_username(username)
+        found_user = User.find_by_username(username)
+        # [4]// user_id = str(found_user.get('_id'))
+        # [5]// user_id = found_user.get('_id')
+        user_id = found_user.get('_id')
         try:
-            if username == existing_user['username']:
+            if found_user and bcrypt.checkpw(password.encode(), found_user['password'].encode()):
+                log_user = User(found_user["email"], found_user['username'], found_user["password"])
+        # -------------- FAILURE LOG ----------------
+                # [2]// login_user(log_user.get_id(), form.remember_me.data)
+                # [2]!> UserMixin,get_id() takes 1 positional arguments but two were given.
 
-                if bcrypt.checkpw(password.encode(), existing_user.get('password').encode()) is False:
-                    flash('Wrong Password', 'DENIED')
-                else:
-                    login_user(existing_user, form.remember_me.data)
-                    # flash(f'Welcome back {existing_user.get('username')}', 'SUCCESS')
-                    return redirect(url_for('auth.profile'))  # Redirect to the user's profile page
+                # [3]// login_user(log_user, form.remember_me.data)
+                # [3]!> No `id` attribute - override `get_id`
+
+                # [4]// login_user(user_id, form.remember_me.data)
+                # [4]!> 'str' object has no attribute 'is_active'
+
+                # [5]// login_user(user_id, form.remember_me.data)
+                # [5]!> 'ObjectId' object has no attribute 'is_active'
+        # -------------------------------------------
+                login_user(user_id, form.remember_me.data)
+                flash(f'Welcome {found_user["username"]}', 'SUCCESS')
+                return redirect(url_for('auth.protected'))
 
         except Exception as e:
-            if existing_user is None:
-                flash('I never met this man in my life', 'NULL')
-                print(f'not a registered user! {e}')
-                return redirect(url_for('auth.register'))
+            flash(f'Error during login: {str(e)}', 'danger')
+            return redirect(url_for('auth.login'))
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', title='Sign In', form=form)
+
+
+# --------------------------- User Loader -----------------------------------
+@login_manager.user_loader
+def load_user(username):
+    user = User.find_by_username(username)
+    if user is not None:
+        return user
+    else:
+        return None
 
 
 #  ------------------------------ Log Out Section --------------------------------------
-
-
 @auth.route('/logout')
 @login_required
 def logout():
@@ -115,13 +129,18 @@ def logout():
 
 
 #  ------------------------------ Profile Section --------------------------------------
-
-
 @auth.route('/profile')
 @login_required
-def profile(username):
-    user = User.find_by_username(username).first_or_404()
+def profile():
+    user = User.find_by_username(current_user.username).first_or_404()
     return render_template('profile.html', user=user)
+
+
+# Example protected route
+@auth.route('/protected')
+@login_required
+def protected():
+    return f'Hello, {current_user.username}! This is a protected route.'
 
 
 
