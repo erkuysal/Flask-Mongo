@@ -2,12 +2,14 @@
 from pymongo import MongoClient
 from datetime import datetime, UTC
 from flask_login import UserMixin
+from bson import ObjectId
 
-# inner imports
-from . import login_manager
+# relative imports
+
 
 # additional imports
 import bcrypt
+
 
 # DataBase handling
 client = MongoClient('localhost', 27017)
@@ -70,13 +72,6 @@ class User(UserMixin):
             # Handle exceptions (e.g., invalid hashing format, incorrect input)
             print(f"Error checking password: {e}")
             return False
-
-# --------------------------- User Loader -----------------------------------
-
-
-@login_manager.user_loader
-def load_user(username):
-    return User.find_by_username(username)
 
 
 # Post model --------------------------------------------------------------
