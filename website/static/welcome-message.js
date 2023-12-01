@@ -3,7 +3,7 @@ const timePeriods = [
     { period: "morning", messages: ["Good Morning!", "Have a great morning!", "Stay productive."], color: "#ffe6a8" },
     { period: "afternoon", messages: ["Good Afternoon!", "Time for a break!", "Keep up the good work."], color: "#ffe27f" },
     { period: "evening", messages: ["Good Evening!", "Enjoy your evening!", "Reflect on your day."], color: "#ffb768" },
-    { period: "night", messages: ["Good Night!", "Sweet dreams!", "Rest well."], color: "#292929" }
+    { period: "night", messages: ["Good Night!", "Sweet dreams!", "Rest well."], color: "#8a8a8a" }
 ];
 
 function getCurrentTimePeriod() {

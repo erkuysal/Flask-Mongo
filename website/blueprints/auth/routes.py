@@ -3,9 +3,10 @@ from flask import render_template, request, redirect, url_for, flash, session, j
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, UTC
 import bcrypt
+from mongoengine.queryset import Q
 
 # Model imports
-from ...models import User, db
+from ...models import User, dbase
 from ... import login_manager
 
 # Inner imports
@@ -13,14 +14,12 @@ from . import auth
 from .forms import *
 
 # Collections
-dbname = db
-Users = dbname["Users"]
 
 
-@auth.before_request
-def before_request():
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.now(UTC)
+# @auth.before_request
+# def before_request():
+#     if current_user.is_authenticated:
+#         current_user.last_seen = datetime.now(UTC)
 
 
 #  ------------------------------ Sign Up Section --------------------------------------
@@ -30,8 +29,10 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
-        existing_username = User.find_by_username(username)
-        existing_email = User.find_by_email(email)
+
+        # existing_user = User.objects(Q(email=email) | Q(username=username)).first()
+        existing_username = User.objects(Q(email=email)).first()
+        existing_email = User.objects(Q(username=username)).first()
 
         if existing_username:    # Check if the username is already taken
             flash('Existing Username!')
@@ -43,12 +44,13 @@ def register():
 
         else:
             flash('Form Validated!')
-            new_user = User(form.email.data, form.username.data, form.password.data)
+            new_user = User(email=form.email.data, username=form.username.data)
+            new_user.set_password(form.password.data)
             User.save(new_user)
             return redirect(url_for('auth.login'))
 
-    profiles = Users.find()
-    return render_template('register.html', todos=profiles,
+    # profiles = Users.find()
+    return render_template('auth/register.html',  # todos=profiles,
                            form=form)
 
 
@@ -58,7 +60,7 @@ def check_username():
     username = form.username.data
 
     # Check if the username is already taken
-    existing_username = User.find_by_username(username)
+    existing_username = User.objects(Q(username=username)).first()
 
     if existing_username:
         message = 'Username is already taken. Please choose a different one.'
@@ -78,45 +80,33 @@ def login():
         username = form.username.data
         password = form.password.data
 
-        found_user = User.find_by_username(username)
-        # [4]// user_id = str(found_user.get('_id'))
-        # [5]// user_id = found_user.get('_id')
-        user_id = found_user.get('_id')
+        found_user = User.objects(Q(username=username)).first()
+
         try:
             if found_user and bcrypt.checkpw(password.encode(), found_user['password'].encode()):
-                log_user = User(found_user["email"], found_user['username'], found_user["password"])
-        # -------------- FAILURE LOG ----------------
-                # [2]// login_user(log_user.get_id(), form.remember_me.data)
-                # [2]!> UserMixin,get_id() takes 1 positional arguments but two were given.
-
-                # [3]// login_user(log_user, form.remember_me.data)
-                # [3]!> No `id` attribute - override `get_id`
-
-                # [4]// login_user(user_id, form.remember_me.data)
-                # [4]!> 'str' object has no attribute 'is_active'
-
-                # [5]// login_user(user_id, form.remember_me.data)
-                # [5]!> 'ObjectId' object has no attribute 'is_active'
-        # -------------------------------------------
-                login_user(user_id, form.remember_me.data)
+                login_user(found_user)
                 flash(f'Welcome {found_user["username"]}', 'SUCCESS')
                 return redirect(url_for('auth.protected'))
+
+            elif bcrypt.checkpw(password.encode(), found_user['password'].encode()) is False:
+                flash('Wrong Password', 'DENIED')
+                return redirect(url_for('auth.login'))
+
+            else:
+                flash('User does not exist!', 'NULL')
+                return redirect(url_for('auth.login'))
 
         except Exception as e:
             flash(f'Error during login: {str(e)}', 'danger')
             return redirect(url_for('auth.login'))
 
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('auth/login.html', title='Sign In', form=form)
 
 
 # --------------------------- User Loader -----------------------------------
 @login_manager.user_loader
-def load_user(username):
-    user = User.find_by_username(username)
-    if user is not None:
-        return user
-    else:
-        return None
+def load_user(user_id):
+    return User.objects(pk=user_id).first()
 
 
 #  ------------------------------ Log Out Section --------------------------------------
@@ -132,7 +122,7 @@ def logout():
 @auth.route('/profile')
 @login_required
 def profile():
-    user = User.find_by_username(current_user.username).first_or_404()
+    user = User.objects(Q(username=current_user.username)).first().first_or_404()
     return render_template('profile.html', user=user)
 
 
@@ -141,7 +131,3 @@ def profile():
 @login_required
 def protected():
     return f'Hello, {current_user.username}! This is a protected route.'
-
-
-
-

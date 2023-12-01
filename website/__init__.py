@@ -1,11 +1,14 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
+from flask_mongoengine import MongoEngine
 
 bootstrap = Bootstrap5()
-login_manager = LoginManager()
 
+login_manager = LoginManager()
 login_manager.login_view = "auth.login"
+
+dbase = MongoEngine()
 
 
 def create_app():
@@ -13,12 +16,20 @@ def create_app():
 
     # Initialisations
     # ...
+    dbase.init_app(app)
     bootstrap.init_app(app)
     login_manager.init_app(app)
 
     # Configurations
     # ...
     app.config['SECRET_KEY'] = 'notfoundablesecretkey'
+    app.config["MONGODB_SETTINGS"] = [
+        {
+            "db": "TEST",
+            "host": "localhost",
+            "port": 27017,
+            "alias": "default",
+        }]
 
     # Blueprint imports
     # ...
