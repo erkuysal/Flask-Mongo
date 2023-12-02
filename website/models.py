@@ -1,5 +1,5 @@
 # Package imports
-# from pymongo import MongoClient
+from mongoengine import signals
 from datetime import datetime, UTC
 from flask_login import UserMixin
 
@@ -31,3 +31,17 @@ class User(UserMixin, dbase.Document):
 
 # Post model --------------------------------------------------------------
 
+
+class Post(dbase.Document):
+    title = dbase.StringField(required=True)
+    content = dbase.StringField(required=True)
+    # author = dbase.ReferenceField(User, reverse_delete_rule=dbase.CASCADE)
+    # !> TypeError: WtfFieldMixin.__init__() takes 1 positional argument but 2 were given
+
+# def pre_delete_post(sender, document, **kwargs):
+#     # Handle cascading delete when a Post is deleted
+#     User.objects(id=document.author.id).update(pull__posts=document.id)
+#
+#
+# # Connect the pre_delete_post function to the pre_delete signal of the Post model
+# signals.pre_delete.connect(pre_delete_post, sender=Post)
