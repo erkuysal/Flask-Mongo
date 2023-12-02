@@ -6,7 +6,7 @@ import bcrypt
 from mongoengine.queryset import Q
 
 # Model imports
-from ...models import User, dbase
+from ...models import User, Post  # , pre_delete_post
 from ... import login_manager
 
 # Inner imports
@@ -86,7 +86,7 @@ def login():
             if found_user and bcrypt.checkpw(password.encode(), found_user['password'].encode()):
                 login_user(found_user)
                 flash(f'Welcome {found_user["username"]}', 'SUCCESS')
-                return redirect(url_for('auth.protected'))
+                return redirect(url_for('auth.profile'))
 
             elif bcrypt.checkpw(password.encode(), found_user['password'].encode()) is False:
                 flash('Wrong Password', 'DENIED')
@@ -115,19 +115,43 @@ def load_user(user_id):
 def logout():
     logout_user()
     flash('You have been logged out', 'SUCCESS')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('main.home'))
 
 
 #  ------------------------------ Profile Section --------------------------------------
 @auth.route('/profile')
 @login_required
 def profile():
-    user = User.objects(Q(username=current_user.username)).first().first_or_404()
-    return render_template('profile.html', user=user)
+    user = User.objects(Q(username=current_user.username)).first_or_404()
+    user_posts = Post.objects(author=user)
+    all_posts = Post.objects()
+
+    return render_template('profile.html', user_posts=user_posts, feed_posts=all_posts)
 
 
-# Example protected route
-@auth.route('/protected')
+#  ------------------------------ Posts Section --------------------------------------
+@auth.route('/create_post', methods=['GET', 'POST'])
 @login_required
-def protected():
-    return f'Hello, {current_user.username}! This is a protected route.'
+def create_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        new_post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        new_post.save()
+        flash('Post created successfully!', 'SUCCESS')
+        return redirect(url_for('profile'))
+    return render_template('main/feed.html', form=form)
+
+
+# @auth.route('/delete_post/<post_id>', methods=['GET', 'POST'])
+# @login_required
+# def delete_post(post_id):
+#     post = Post.objects(id=post_id).first()
+#
+#     # Ensure the user deleting the post is the author
+#     if post and post.author == current_user:
+#         post.delete()
+#         return redirect(url_for('feed'))
+#
+#     # Handle cases where the post does not exist or the user is not the author
+#     flash('Unable to delete the post.', 'danger')
+#     return redirect(url_for('feed'))

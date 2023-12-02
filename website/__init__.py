@@ -25,7 +25,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'notfoundablesecretkey'
     app.config["MONGODB_SETTINGS"] = [
         {
-            "db": "TEST",
+            "db": "profiles",
             "host": "localhost",
             "port": 27017,
             "alias": "default",

@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  <h1>Welcome, {{ username }}!</h1>
 
-    <h1>User: {{ user.username }}</h1>
+  <h2>Your Posts</h2>
+  {% for post in posts %}
+    <div class="post">
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.content }}</p>
+      <small>By: {{ post.author.username }} | Date: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+    </div>
+  {% endfor %}
 
+  <hr>
+
+  <h2>Feed</h2>
+  {% for post in feed_posts %}
+    <div class="post">
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.content }}</p>
+      <small>By: {{ post.author.username }} | Date: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+    </div>
+  {% endfor %}
+
+  <hr>
+
+  <a href="{{ url_for('auth.create_post') }}">Create a new post</a>
 {% endblock %}
