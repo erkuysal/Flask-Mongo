@@ -123,10 +123,9 @@ def logout():
 @login_required
 def profile():
     user = current_user  # Assuming you are using Flask-Login
-    user_posts = Post.objects(author=user.username)
-    all_posts = Post.objects()
+    user_posts = Post.objects(author=user)
 
-    return render_template('profile.html', user_posts=user_posts, feed_posts=all_posts, title='Profile')
+    return render_template('profile.html', user_posts=user_posts, title='Profile')
 
 
 #  ------------------------------ Posts Section --------------------------------------
