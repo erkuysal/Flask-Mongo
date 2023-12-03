@@ -18,7 +18,6 @@ def home():
 
 
 @main.route('/feed')
-@login_required
 def feed():
     all_posts = Post.objects()
-    return render_template('main/feed.html', feed_posts=all_posts)
+    return render_template('main/feed.html', feed_posts=all_posts, title='Feed')

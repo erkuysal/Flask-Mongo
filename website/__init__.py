@@ -8,7 +8,7 @@ bootstrap = Bootstrap5()
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
-dbase = MongoEngine()
+db = MongoEngine()
 
 
 def create_app():
@@ -16,7 +16,7 @@ def create_app():
 
     # Initialisations
     # ...
-    dbase.init_app(app)
+    db.init_app(app)
     bootstrap.init_app(app)
     login_manager.init_app(app)
 
@@ -31,6 +31,7 @@ def create_app():
             "alias": "default",
         }]
 
+
     # Blueprint imports
     # ...
     from .blueprints.main import main
@@ -40,5 +41,9 @@ def create_app():
     # ...
     app.register_blueprint(main, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+
+    # Model imports
+    # ...
+    from .models import User, Post
 
     return app

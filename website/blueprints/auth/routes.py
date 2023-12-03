@@ -122,11 +122,11 @@ def logout():
 @auth.route('/profile')
 @login_required
 def profile():
-    user = User.objects(Q(username=current_user.username)).first_or_404()
-    user_posts = Post.objects(author=user)
+    user = current_user  # Assuming you are using Flask-Login
+    user_posts = Post.objects(author=user.username)
     all_posts = Post.objects()
 
-    return render_template('profile.html', user_posts=user_posts, feed_posts=all_posts)
+    return render_template('profile.html', user_posts=user_posts, feed_posts=all_posts, title='Profile')
 
 
 #  ------------------------------ Posts Section --------------------------------------
@@ -138,7 +138,7 @@ def create_post():
         new_post = Post(title=form.title.data, content=form.content.data, author=current_user)
         new_post.save()
         flash('Post created successfully!', 'SUCCESS')
-        return redirect(url_for('profile'))
+        return redirect(url_for('auth.profile'))
     return render_template('main/feed.html', form=form)
 
 
