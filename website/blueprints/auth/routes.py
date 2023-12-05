@@ -1,7 +1,7 @@
 # Package imports
-from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from datetime import datetime, UTC
+# from datetime import datetime, UTC
 import bcrypt
 from mongoengine.queryset import Q
 
@@ -124,33 +124,5 @@ def logout():
 def profile():
     user = current_user  # Assuming you are using Flask-Login
     user_posts = Post.objects(author=user)
+    return render_template('user/profile.html', user_posts=user_posts, title='Profile')
 
-    return render_template('profile.html', user_posts=user_posts, title='Profile')
-
-
-#  ------------------------------ Posts Section --------------------------------------
-@auth.route('/create_post', methods=['GET', 'POST'])
-@login_required
-def create_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        new_post = Post(title=form.title.data, content=form.content.data, author=current_user)
-        new_post.save()
-        flash('Post created successfully!', 'SUCCESS')
-        return redirect(url_for('auth.profile'))
-    return render_template('main/feed.html', form=form)
-
-
-# @auth.route('/delete_post/<post_id>', methods=['GET', 'POST'])
-# @login_required
-# def delete_post(post_id):
-#     post = Post.objects(id=post_id).first()
-#
-#     # Ensure the user deleting the post is the author
-#     if post and post.author == current_user:
-#         post.delete()
-#         return redirect(url_for('feed'))
-#
-#     # Handle cases where the post does not exist or the user is not the author
-#     flash('Unable to delete the post.', 'danger')
-#     return redirect(url_for('feed'))

@@ -1,12 +1,11 @@
 # Package imports
-from mongoengine import signals
+# from mongoengine import signals
 from mongoengine import Document, EmailField, StringField, DateTimeField, ReferenceField
 from datetime import datetime, UTC
 from flask_login import UserMixin
 
 # relative imports
 # ...
-# from . import dbase
 
 # additional imports
 import bcrypt
@@ -30,7 +29,7 @@ class User(UserMixin, Document):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
 
-# Post model --------------------------------------------------------------
+# --------------------------- Post Model -----------------------------------
 
 
 class Post(Document):
@@ -38,5 +37,6 @@ class Post(Document):
     content = StringField(required=True)
     author = ReferenceField(User, reverse_delete_rule=2)
     created_at = DateTimeField(default=datetime.now(UTC))
+
     def __repr__(self):
         return f"Post('{self.title}', '{self.content}', '{self.author.username}')"

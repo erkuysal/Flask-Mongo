@@ -31,16 +31,17 @@ def create_app():
             "alias": "default",
         }]
 
-
     # Blueprint imports
     # ...
     from .blueprints.main import main
     from .blueprints.auth import auth
+    from .blueprints.actions import act
 
     # Blueprint registers
     # ...
     app.register_blueprint(main, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(act, url_prefix='/')
 
     # Model imports
     # ...

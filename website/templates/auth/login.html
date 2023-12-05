@@ -5,12 +5,13 @@
 
 {% block content %}
 
-    <form method="post">
-        {{ form.csrf_token }}
-        {{ render_field(form.username) }}
-        {{ render_field(form.password) }}
-        {{ render_field(form.remember_me) }}
-        {{ render_field(form.submit) }}
-    </form>
+        <form method="post">
+            {{ form.csrf_token }}
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.remember_me) }}
+            {{ render_field(form.submit) }}
+        </form>
+
 
 {% endblock %}

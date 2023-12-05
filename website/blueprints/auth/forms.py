@@ -28,9 +28,3 @@ class SignInForm(FlaskForm):
                              validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Sign In')
-
-
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired(), Length(min=1, max=280)])
-    submit = SubmitField('Post')

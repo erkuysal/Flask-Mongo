@@ -1,35 +1,24 @@
-<!-- templates/feed.html -->
+<!-- templates/main/feed.html -->
 
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Feed</h1>
+  <h1 class="text-center">Feed</h1>
 
-  <!-- Post Creation Form -->
-  <div class="post-creation-form">
-    <h2>Create a New Post</h2>
-    <form method="POST" action="{{ url_for('auth.create_post') }}">
-      {{ form.hidden_tag() }}
-      <div class="form-group">
-        {{ form.title.label(class="form-control-label") }}
-        {{ form.title(class="form-control") }}
-      </div>
-      <div class="form-group">
-        {{ form.content.label(class="form-control-label") }}
-        {{ form.content(class="form-control") }}
-      </div>
-      <button type="submit" class="btn btn-primary">Create Post</button>
-    </form>
-  </div>
-
-  <hr>
-
-  <!-- Display Feed Posts -->
-  {% for post in feed_posts %}
-    <div class="post">
-      <h3>{{ post.title }}</h3>
-      <p>{{ post.content }}</p>
-      <small>By: {{ post.author.username }} | Date: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+     <!-- Centered Create Post Button -->
+    <div class="d-flex justify-content-center">
+        <a href="{{ url_for('action.create_post') }}" class="btn btn-primary btn-lg mb-3">Create Post</a>
     </div>
-  {% endfor %}
+
+    <div class="d-flex justify-content-center">
+      <!-- Display Feed Posts -->
+        {% for post in feed_posts %}
+        <div class="post">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <small>By: {{ post.author.username }} | Date: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

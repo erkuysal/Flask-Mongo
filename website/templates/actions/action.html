@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form, render_field %}
+
+{% block create_post %}
+
+     <form method="post" class="text-center justify-content-center">
+        {{ form.csrf_token }}
+        {{ render_field(form.title) }}
+        {{ render_field(form.content) }}
+        {{ render_field(form.submit) }}
+    </form>
+
+{% endblock %}

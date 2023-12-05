@@ -22,7 +22,7 @@
     <nav class="navbar bg-dark navbar-expand-lg border-bottom border-body" data-bs-theme="dark">
         <div class="container-fluid">
 
-            <a href="#" class="navbar-brand">Foxtrot</a>
+            <a href="#" class="navbar-brand">The Place</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -53,20 +53,19 @@
                     <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                   </li>
                   {% endif %}
-
-                  <li class="nav-item">
-                    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                  </li>
             </ul>
         </div>
     </nav>
 
     <div class="container mt-3">
-        {% block content %}{% endblock %}
+        {% block content %} {% endblock %}
+
+        {% block create_post %} {% endblock %}
+
 
         {% with messages = get_flashed_messages() %}
           {% if messages %}
-            <ul class=flashes>
+            <ul class="flashes">
             {% for message in messages %}
               <li>{{ message }}</li>
             {% endfor %}
