@@ -5,6 +5,8 @@
 
 {% block content %}
 
+    <h1 class="text-center">Register</h1>
+
     <form method="post" class="form-signin">
         {{ form.csrf_token }}
         {{ render_field(form.email) }}
@@ -16,6 +18,8 @@
         {{ render_field(form.password_confirm) }}
         {{ render_field(form.submit) }}
     </form>
+
+    <p class="text-center justify-content-center">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
