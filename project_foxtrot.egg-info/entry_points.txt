@@ -1,0 +1,2 @@
+[console_scripts]
+project_foxtrot = project_foxtrot:main
