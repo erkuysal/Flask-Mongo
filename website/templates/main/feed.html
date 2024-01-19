@@ -10,9 +10,15 @@
         <a href="{{ url_for('action.create_post') }}" class="btn btn-primary btn-lg mb-3">Create Post</a>
     </div>
 
+     <!-- Centered Upload File Button -->
     <div class="d-flex justify-content-center">
+        <a href="{{ url_for('action.upload') }}" class="btn btn-primary btn-lg mb-3">Upload</a>
+    </div>
+
+    <div class="d-grid justify-content-center">
       <!-- Display Feed Posts -->
         {% for post in feed_posts %}
+        <br>
         <div class="post">
             <h3>{{ post.title }}</h3>
             <p>{{ post.content }}</p>

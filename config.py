@@ -1,16 +1,33 @@
-# imports
-from main import app
+import os
+
+import imghdr
+
+def validate_image(stream):
+    header = stream.read(512)
+    stream.seek(0)
+    format = imghdr.what(None, header)
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
 
 
-class Config(object):
-    SECRET_KEY = 'definitely-not-foundable-key'
-    SESSION_TYPE = 'mongodb'
+SECRET_KEY = 'definitely-not-foundable-key'
+SESSION_TYPE = 'mongodb'
 
-    # MongoDB configuration
-    app.config['MONGO_URI'] = 'mongodb://localhost:27017/profiles'
+# MongoDB configuration
+MONGODB_SETTINGS = [
+    {
+        "db": "profiles",
+        "host": "localhost",
+        "port": 27017,
+        "alias": "default",
+    }]
 
-    # Session configuration
-    app.config['SESSION_TYPE'] = 'mongodb'
-    app.config['SESSION_PERMANENT'] = False  # You can set this to True if you want permanent sessions
-    app.config['SESSION_USE_SIGNER'] = True  # Enable session id signing for security
-    app.config['SESSION_KEY_PREFIX'] = 'profile_'  # A prefix for session keys
+# File/Upload Configurations
+MAX_CONTENT_LENGTH = 2 * 1024 * 1024
+UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
+UPLOAD_PATH = 'uploads'
+
+@staticmethod
+def init_app(app):
+    pass

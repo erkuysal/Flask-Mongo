@@ -1,7 +1,14 @@
 # Package imports
-from flask import render_template, request, redirect, url_for, flash, jsonify
+from flask import render_template, request, redirect, url_for, flash, send_file, abort
 from flask_login import login_required, current_user
+from werkzeug.exceptions import BadRequest
+from werkzeug.utils import secure_filename
+import uuid
+import sys
+import os
 
+
+from ... import config_path
 
 # Relative imports
 from . import act
@@ -36,3 +43,13 @@ def create_post():
 #     # Handle cases where the post does not exist or the user is not the author
 #     flash('Unable to delete the post.', 'danger')
 #     return redirect(url_for('feed'))
+
+
+# ------------------------------ End Posts Section / Begin Upload Section --------------------------------------
+
+@act.route('/upload', methods=['GET', 'POST'])
+def upload():
+    files = os.listdir(config_path.UPLOAD_PATH)
+    return render_template('actions/upload.html', files=files)
+
+# ------------------------------ End Upload Section --------------------------------------

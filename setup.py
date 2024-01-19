@@ -2,7 +2,6 @@ from distutils.core import setup
 from setuptools import find_packages
 import os
 
-
 # User-friendly description from README.md
 current_directory = os.path.dirname(os.path.abspath(__file__))
 try:
@@ -35,13 +34,10 @@ setup(
     long_description=long_description,
     long_description_context_type='text/markdown',
 
-    # Your name
     author='Feyzullah Uysal, Talha Yildirim, Emir Aydin',
 
-    # Your email
     author_email='f.erkuysal@gmail.com',
 
-    # Either the link to your github or to your website
     url='https://github.com/erkuysal/Flask-Mongo',
 
     # Link from which the project can be downloaded
@@ -51,8 +47,9 @@ setup(
     keywords=[],
 
     # List of packages to install with this one
-    install_requires=['python == 3.12',
+    install_requires=['python >= 3.10',
                       'flask == 3.0.0',
+                      'flask-wtf == 1.0.1'
                       'flask-bootstrap == 3.3.7.1',
                       'bootstrap-flask == 2.3.3',
                       'flask-login == 0.6.3',
@@ -60,5 +57,12 @@ setup(
                       'bcrypt ==  4.1.2'],
 
     # https://pypi.org/classifiers/
-    classifiers=[]
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13'
+        # Add more classifiers as needed
+    ]
 )
