@@ -7,9 +7,6 @@ import uuid
 import sys
 import os
 
-
-from ... import config_path
-
 # Relative imports
 from . import act
 from .forms import *
@@ -49,7 +46,7 @@ def create_post():
 
 @act.route('/upload', methods=['GET', 'POST'])
 def upload():
-    files = os.listdir(config_path.UPLOAD_PATH)
+    files = 'uploads'
     return render_template('actions/upload.html', files=files)
 
 # ------------------------------ End Upload Section --------------------------------------
