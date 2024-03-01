@@ -2,7 +2,7 @@ import os
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class Config(object):
+class Config:
 
     DATABASE_CONNECT_OPTIONS = {}
 
@@ -85,6 +85,7 @@ config = {
     'testing': TestingConfig,
     'production': ProductionConfig,
     'api': APIConfig,
+    'default': DevelopmentConfig
 }
 
 

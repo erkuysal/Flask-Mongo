@@ -11,7 +11,7 @@ import os
 from . import act
 from .forms import *
 
-from ...models import Post
+from ...models import Post, File
 
 
 # ------------------------------ Posts Section --------------------------------------
@@ -45,8 +45,33 @@ def create_post():
 # ------------------------------ End Posts Section / Begin Upload Section --------------------------------------
 
 @act.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
-    files = 'uploads'
-    return render_template('actions/upload.html', files=files)
+    form = UploadForm()
+
+    if form.validate_on_submit():
+        user = current_user
+
+        file = form.file.data
+
+        filename = secure_filename(file.filename)
+
+        new_file = File(filename=filename, data=file, author=user)
+        new_file.save()
+
+        flash('File uploaded successfully', 'SUCCESS')
+        return redirect(url_for('main.feed'))
+
+    return render_template('actions/upload.html', form=form)
+
 
 # ------------------------------ End Upload Section --------------------------------------
+
+# form = UploadForm()
+# if request.method == 'POST':
+#     uploaded_file = form.file.data
+#     if uploaded_file.filename != '':
+#         uploaded_file.save(uploaded_file.filename)
+#         flash('File uploaded successfully!', 'SUCCESS')
+#     return redirect(url_for('main.feed'))
+# return render_template('actions/upload.html', form=form)

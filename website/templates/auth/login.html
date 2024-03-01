@@ -5,19 +5,42 @@
 
 {% block content %}
 
-        <h1 class="text-center">Login</h1>
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
 
-        <form method="post">
-            {{ form.csrf_token }}
-            {{ render_field(form.username) }}
-            {{ render_field(form.password) }}
-            {{ render_field(form.remember_me) }}
-            {{ render_field(form.submit) }}
-        </form>
+            <main class="form-signin w-100 m-auto align-items-center">
 
-        <br>
+                <form method="post">
+                    {{ form.csrf_token }}
 
-        <p class="text-center justify-content-center">Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+                    <img class="mb-4" src="#" alt="" width="72" height="57">
+                    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
+                    <div class="form-floating">
+                        {{ render_field(form.username) }}
+                    </div>
+
+                    <div class="form-floating">
+                        {{ render_field(form.password) }}
+                    </div>
+
+                    <div class="form-check text-start my-3">
+                        {{ render_field(form.remember_me) }}
+                    </div>
+
+                    {{ render_field(form.submit) }}
+                    <p class="text-center justify-content-center">Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+                </form>
+
+            </main>
+
+        </div>
+    </div>
+
+
+    <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous">
+    </script>
 
 {% endblock %}

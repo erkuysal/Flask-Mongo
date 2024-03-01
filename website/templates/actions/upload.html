@@ -1,6 +1,18 @@
-{% extends base.html %}
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form, render_field %}
 
-<form method="POST" action="" enctype="multipart/form-data">
-      <p><input type="file" name="file"></p>
-      <p><input type="submit" value="Submit"></p>
-</form>
+{% block upload_content %}
+<div class="text-center">
+    <h1>File Upload</h1>
+
+    <form method="POST" action="" enctype="multipart/form-data" class="text-center justify-content-center">
+        {{ render_field(form.file) }}
+        {{ render_field(form.submit) }}
+    </form>
+
+    <hr>
+    {% for file in files %}
+        <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
+    {% endfor %}
+</div>
+{% endblock %}

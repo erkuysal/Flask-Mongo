@@ -14,5 +14,5 @@ class PostForm(FlaskForm):
 class UploadForm(FlaskForm):
     file = FileField('File')
     submit = SubmitField('Upload')
-    delete = SubmitField('Delete')
+#   delete = SubmitField('Delete')
     

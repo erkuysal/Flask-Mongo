@@ -1,7 +1,7 @@
 # Package imports
 
 # from mongoengine import signals
-from mongoengine import Document, EmailField, StringField, DateTimeField, ReferenceField
+from mongoengine import Document, EmailField, StringField, DateTimeField, ReferenceField, BinaryField, FileField
 from datetime import datetime, UTC
 from flask_login import UserMixin
 
@@ -13,7 +13,6 @@ import bcrypt
 
 
 # --------------------------- User Model -----------------------------------
-
 
 class User(UserMixin, Document):
     email = EmailField(unique=True, required=True)
@@ -30,8 +29,8 @@ class User(UserMixin, Document):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
 
-# --------------------------- Post Model -----------------------------------
 
+# --------------------------- Post Model -----------------------------------
 
 class Post(Document):
     title = StringField(required=True)
@@ -41,3 +40,15 @@ class Post(Document):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.content}', '{self.author.username}')"
+
+
+# --------------------------- File Model -----------------------------------
+
+class File(Document):
+    filename = StringField(required=True)
+    file = FileField()
+    author = ReferenceField(User, reverse_delete_rule=2)
+#   post = ReferenceField(Post, reverse_delete_rule=2)
+
+    # def __repr__(self):
+    #     return f"File('{self.file_name}', '{self.post.title}', '{self.post.author.username}')"
